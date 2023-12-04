@@ -55,3 +55,16 @@ export const deleteTodo = async (req, res) => {
     await todo.destroy()
     return res.json({ success: true, data: todo })
 }
+
+export const toggleTodoComplete = async (req, res) => {
+    const id = req.params.id;
+    const todo = await db.models.todo.findByPk(id)
+    if (!todo) {
+        return res.status(StatusCode.NOT_FOUND).json({
+            success: false, message: `Todo with id ${id} not found`
+        })
+    }
+    todo.set({ isComplete: !todo.isComplete })
+    await todo.save()
+    return res.json({ success: true, data: todo })
+}
